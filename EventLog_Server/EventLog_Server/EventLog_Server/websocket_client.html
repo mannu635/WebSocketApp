@@ -1,0 +1,94 @@
+<!--
+/*All rights reserved, Copyrights Ashish Patil, 2010. http://ashishware.com/
+* Permission granted to modify/use this code for non commercial purpose so long as the
+* original notice is retained. This code is for educational purpose ONLY.
+* DISCLAIMER: The code is provided as is, without warranties of any kind. The author
+* is not responsible for any damage (of any kind) this code may cause. The author is also not
+* responsible for any misuse of the code. Use and run this code AT YOUR OWN RISK.
+*
+*/-->
+
+<html>
+<head>
+    <style type="text/css">
+        #TextArea1{
+            height: 130px; width: 252px;
+        }
+        
+        .item
+        {border: solid 1px gray; font-family:Calibri, Cambria, Arial;  padding:5px; }
+    </style>
+
+    <script language="javascript" type="text/javascript">
+// <!CDATA[
+        var ws;
+        var flag = true;
+
+        function btnConnect_onclick() {
+            var x = document.getElementById("log");
+          
+if ("WebSocket" in window) {
+    ws = new WebSocket("ws://localhost:8181/demo");
+    ws.onopen = function() {
+        //alert("opened");
+        //alert(evt.data);
+        ws.send("Hello websocket 23444444 !");
+        document.getElementById("Button1").disabled = false;
+        document.getElementById("btnConnect").disabled = true;
+    };
+    ws.onmessage = function(evt) {
+        // alert("Server says:" + evt.data);
+        var node = document.createElement("div");
+        node.setAttribute("class","item");
+        node.innerHTML = evt.data;
+        x.insertBefore(node, x.firstChild);
+        // x.appendChild(node);
+        ;
+    };
+    ws.onclose = function() {
+        alert("socket closed");
+        document.getElementById("Button1").disabled = true;
+        document.getElementById("btnConnect").disabled = false;
+        document.getElementById("Button1").value = "Stop";
+        flag = true;
+    };
+  
+} else {
+  alert("The browser doesn't support WebSocket.");
+}
+        }
+
+        function Button1_onclick() {
+            if (flag) {
+                document.getElementById("Button1").value = "Start";
+                ws.send("STP");
+            }
+            else {
+                document.getElementById("Button1").value = "Stop";
+                ws.send("STR");
+            }
+            flag = !flag;
+        }
+
+        function Button3_onclick() {
+            ws.close();
+        }
+
+// ]]>
+    </script>
+
+</head>
+<body>
+     
+      <div id="log" style="height:500px;overflow:auto;background-color:#FFFFCC; border: solid 1px gray">
+     
+      </div>
+    <p>
+        <input id="btnConnect" type="button" value="Try to Connect" onclick="return btnConnect_onclick()" /></p>
+    <p>
+        <input id="Button1" type="button" value="Stop" 
+            onclick="return Button1_onclick()" disabled="disabled" />&nbsp;
+        &nbsp;
+        <input id="Button3" type="button" value="Close" onclick="return Button3_onclick()" /></p>
+</body>
+</html>
